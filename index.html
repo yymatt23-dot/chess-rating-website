@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>Sangat NHS Chess Rating</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f5f2;
+      margin: 0;
+      color: #173c30;
+    }
+
+    header {
+      background: #173c30;
+      color: white;
+      text-align: center;
+      padding: 30px 15px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    header p {
+      color: #e6b84e;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .card,
+    .admin-login,
+    .admin-action-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px #0001;
+      margin-bottom: 25px;
+    }
+
+    h2 {
+      color: #173c30;
+      margin-top: 0;
+    }
+
+    input,
+    select {
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 200px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #173c30;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #235c49;
+    }
+
+    #logoutBtn {
+      background: #A30000;
+    }
+
+    #logoutBtn:hover {
+      background: #D60000;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th,
+    td {
+      padding: 13px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #173c30;
+      color: white;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 25px;
+    }
+
+    #loginMessage {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    footer {
+      text-align: center;
+      background: #10251f;
+      color: white;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+    .muted {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+
+    .warning {
+      color: #b36b00;
+    }
+
+    @media (max-width: 600px) {
+      input,
+      select {
+        width: 100%;
+      }
+
+      table {
+        font-size: 14px;
+      }
+
+      th,
+      td {
+        padding: 9px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>♟ Sangat NHS Chess Club</h1>
+    <p>Official Chess Rating Leaderboard</p>
+  </header>
+
+  <main>
+
+    <!-- ADMIN LOGIN -->
+    <div class="admin-login card">
+
+      <h2>Admin Panel</h2>
+
+      <div id="loginFormInputs">
+
+        <input
+          id="adminEmail"
+          type="email"
+          placeholder="Admin Email"
+        />
+
+        <input
+          id="adminPassword"
+          type="password"
+          placeholder="Password"
+        />
+
+        <button id="loginBtn">
+          Login
+        </button>
+
+      </div>
+
+      <button
+        id="logoutBtn"
+        style="display:none;"
+      >
+        Logout
+      </button>
+
+      <p id="loginMessage"></p>
+
+    </div>
+
+
+    <!-- ADD PLAYER -->
+    <div
+      class="admin-action-card"
+      id="addPlayerCard"
+      style="display:none;"
+    >
+
+      <h2>➕ Add New Chess Player</h2>
+
+      <input
+        id="newPlayerName"
+        type="text"
+        placeholder="Student Name"
+      />
+
+      <button id="addPlayerBtn">
+        Add Player
+      </button>
+
+    </div>
+
+
+    <!-- RECORD MATCH -->
+    <div
+      class="admin-action-card"
+      id="recordMatchCard"
+      style="display:none;"
+    >
+
+      <h2>🎯 Record Match Result</h2>
+
+      <div
+        style="
+          display:flex;
+          gap:10px;
+          flex-wrap:wrap;
+          align-items:center;
+        "
+      >
+
+        <select id="player1"></select>
+
+        <select id="player2"></select>
+
+        <select
+          id="matchResult"
+          title="Result"
+        >
+
+          <option value="1">
+            Player 1 Wins
+          </option>
+
+          <option value="0.5">
+            Draw
+          </option>
+
+          <option value="0">
+            Player 2 Wins
+          </option>
+
+        </select>
+
+        <button id="recordMatchBtn">
+          Record Match
+        </button>
+
+      </div>
+
+      <p class="muted">
+        Ratings update automatically using the Elo formula (K = 32).
+      </p>
+
+    </div>
+
+
+    <!-- LEADERBOARD -->
+    <div class="card">
+
+      <h2>🏆 Chess Leaderboard</h2>
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Rank</th>
+            <th>Player Name</th>
+            <th>Rating</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="leaderboard">
+
+          <tr>
+            <td
+              colspan="3"
+              class="empty"
+            >
+              No players registered yet.
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- MATCH HISTORY -->
+    <div class="card">
+
+      <h2>📜 Match History</h2>
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>When</th>
+            <th>Player 1</th>
+            <th>Result</th>
+            <th>Player 2</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="matchHistory">
+
+          <tr>
+            <td
+              colspan="4"
+              class="empty"
+            >
+              No matches recorded yet.
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </main>
+
+
+  <footer>
+    Sangat National High School | Chess Club
+  </footer>
+
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+
+    // ============================================================
+    // SUPABASE CONFIGURATION
+    // ============================================================
+
+    const SUPABASE_URL =
+      "https://jdcgsmkbsvmfxegwanoy.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_f_i90MEJtJJtr7eYeTsAfw_2gXTCkMp";
+
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    // ============================================================
+    // HTML ESCAPE
+    // ============================================================
+
+    function escapeHtml(value) {
+
+      if (
+        value === null ||
+        value === undefined
+      ) {
+        return "";
+      }
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    // ============================================================
+    // SHOW / HIDE ADMIN FEATURES
+    // ============================================================
+
+    function showAdminFeatures(isLoggedIn) {
+
+      document.getElementById(
+        "loginFormInputs"
+      ).style.display =
+        isLoggedIn ? "none" : "block";
+
+      document.getElementById(
+        "logoutBtn"
+      ).style.display =
+        isLoggedIn ? "inline-block" : "none";
+
+      document.getElementById(
+        "addPlayerCard"
+      ).style.display =
+        isLoggedIn ? "block" : "none";
+
+      document.getElementById(
+        "recordMatchCard"
+      ).style.display =
+        isLoggedIn ? "block" : "none";
+    }
+
+
+    // ============================================================
+    // CHECK USER SESSION
+    // ============================================================
+
+    async function checkUserSession() {
+
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.getSession();
+
+        if (error) {
+
+          console.error(
+            "Session error:",
+            error
+          );
+
+          return;
+        }
+
+        const session =
+          data?.session ?? null;
+
+        if (session) {
+
+          document.getElementById(
+            "loginMessage"
+          ).textContent =
+            "Logged in as Admin.";
+
+          document.getElementById(
+            "loginMessage"
+          ).className =
+            "success";
+
+          showAdminFeatures(true);
+
+        } else {
+
+          showAdminFeatures(false);
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Session check error:",
+          error
+        );
+
+      }
+
+    }
+
+
+    // ============================================================
+    // LOGIN
+    // ============================================================
+
+    async function adminLogin() {
+
+      const email =
+        document.getElementById(
+          "adminEmail"
+        ).value.trim();
+
+      const password =
+        document.getElementById(
+          "adminPassword"
+        ).value;
+
+      const messageEl =
+        document.getElementById(
+          "loginMessage"
+        );
+
+      messageEl.className = "";
+      messageEl.textContent =
+        "Signing in…";
+
+
+      if (!email || !password) {
+
+        messageEl.textContent =
+          "Please enter your email and password.";
+
+        messageEl.className =
+          "error";
+
+        return;
+      }
+
+
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+
+
+        if (error) {
+
+          console.error(
+            "Login error:",
+            error
+          );
+
+          messageEl.textContent =
+            "Login failed: " +
+            error.message;
+
+          messageEl.className =
+            "error";
+
+          return;
+        }
+
+
+        console.log(
+          "Login successful:",
+          data
+        );
+
+
+        messageEl.textContent =
+          "Login successful!";
+
+        messageEl.className =
+          "success";
+
+        showAdminFeatures(true);
+
+
+        await loadPlayers();
+        await loadMatches();
+
+
+      } catch (error) {
+
+        console.error(
+          "Unexpected login error:",
+          error
+        );
+
+        messageEl.textContent =
+          "Unexpected error during login.";
+
+        messageEl.className =
+          "error";
+      }
+
+    }
+
+
+    // ============================================================
+    // LOGOUT
+    // ============================================================
+
+    async function adminLogout() {
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient.auth.signOut();
+
+
+        if (error) {
+
+          console.error(
+            "Logout error:",
+            error
+          );
+
+          return;
+        }
+
+
+        document.getElementById(
+          "loginMessage"
+        ).textContent =
+          "Logged out.";
+
+        document.getElementById(
+          "loginMessage"
+        ).className =
+          "warning";
+
+
+        showAdminFeatures(false);
+
+
+      } catch (error) {
+
+        console.error(
+          "Logout exception:",
+          error
+        );
+
+      }
+
+    }
+
+
+    // ============================================================
+    // ADD NEW PLAYER
+    // ============================================================
+
+    async function addNewPlayer() {
+
+      const name =
+        document.getElementById(
+          "newPlayerName"
+        ).value.trim();
+
+
+      if (!name) {
+
+        alert(
+          "Please enter a player name!"
+        );
+
+        return;
+      }
+
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("players")
+            .insert([
+              {
+                name: name,
+                rating: 1000
+              }
+            ]);
+
+
+        if (error) {
+
+          console.error(
+            "Insert player error:",
+            error
+          );
+
+          alert(
+            "Failed to add player:\n\n" +
+            error.message
+          );
+
+          return;
+        }
+
+
+        document.getElementById(
+          "newPlayerName"
+        ).value = "";
+
+
+        await loadPlayers();
+
+
+        alert(
+          "Player added successfully!"
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Add player error:",
+          error
+        );
+
+        alert(
+          "Unexpected error adding player."
+        );
+
+      }
+
+    }
+
+
+    // ============================================================
+    // LOAD PLAYERS
+    // ============================================================
+
+    async function loadPlayers() {
+
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("players")
+            .select(
+              "id, name, rating"
+            )
+            .order(
+              "rating",
+              {
+                ascending: false
+              }
+            );
+
+
+        if (error) {
+
+          console.error(
+            "Load players error:",
+            error
+          );
+
+          alert(
+            "Failed to load players:\n\n" +
+            error.message
+          );
+
+          return;
+        }
+
+
+        const leaderboard =
+          document.getElementById(
+            "leaderboard"
+          );
+
+
+        leaderboard.innerHTML = "";
+
+
+        if (
+          !data ||
+          data.length === 0
+        ) {
+
+          leaderboard.innerHTML = `
+            <tr>
+              <td colspan="3" class="empty">
+                No players registered yet.
+              </td>
+            </tr>
+          `;
+
+          populatePlayerDropdowns([]);
+
+          return;
+        }
+
+
+        data.forEach(
+          (player, index) => {
+
+            leaderboard.innerHTML += `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${escapeHtml(player.name)}</td>
+                <td>${player.rating}</td>
+              </tr>
+            `;
+
+          }
+        );
+
+
+        populatePlayerDropdowns(data);
+
+
+      } catch (error) {
+
+        console.error(
+          "loadPlayers exception:",
+          error
+        );
+
+      }
+
+    }
+
+
+    // ============================================================
+    // POPULATE PLAYER DROPDOWNS
+    // ============================================================
+
+    function populatePlayerDropdowns(players) {
+
+      const p1 =
+        document.getElementById(
+          "player1"
+        );
+
+      const p2 =
+        document.getElementById(
+          "player2"
+        );
+
+
+      p1.innerHTML = "";
+      p2.innerHTML = "";
+
+
+      if (
+        !players ||
+        players.length === 0
+      ) {
+
+        p1.innerHTML =
+          `<option value="">No players</option>`;
+
+        p2.innerHTML =
+          `<option value="">No players</option>`;
+
+        return;
+      }
+
+
+      players.forEach(
+        player => {
+
+          const option1 =
+            document.createElement(
+              "option"
+            );
+
+          option1.value =
+            player.id;
+
+          option1.textContent =
+            player.name;
+
+          p1.appendChild(
+            option1
+          );
+
+
+          const option2 =
+            document.createElement(
+              "option"
+            );
+
+          option2.value =
+            player.id;
+
+          option2.textContent =
+            player.name;
+
+          p2.appendChild(
+            option2
+          );
+
+        }
+      );
+
+    }
+
+
+    // ============================================================
+    // CONVERT NUMERIC RESULT TO CHESS RESULT
+    // ============================================================
+
+    function getChessResult(numericResult) {
+
+      if (numericResult === 1) {
+        return "1-0";
+      }
+
+      if (numericResult === 0) {
+        return "0-1";
+      }
+
+      return "1/2-1/2";
+    }
+
+
+    // ============================================================
+    // DISPLAY CHESS RESULT
+    // ============================================================
+
+    function formatChessResult(result) {
+
+      if (result === "1-0") {
+        return "1 - 0";
+      }
+
+      if (result === "0-1") {
+        return "0 - 1";
+      }
+
+      if (
+        result === "1/2-1/2" ||
+        result === "½-½"
+      ) {
+        return "½ - ½";
+      }
+
+      return escapeHtml(result);
+    }
+
+
+    // ============================================================
+    // RECORD MATCH
+    // ============================================================
+
+    async function recordMatch() {
+
+      const player1Id =
+        document.getElementById(
+          "player1"
+        ).value;
+
+      const player2Id =
+        document.getElementById(
+          "player2"
+        ).value;
+
+      const numericResult =
+        parseFloat(
+          document.getElementById(
+            "matchResult"
+          ).value
+        );
+
+
+      // ----------------------------------------------------------
+      // VALIDATION
+      // ----------------------------------------------------------
+
+      if (
+        !player1Id ||
+        !player2Id
+      ) {
+
+        alert(
+          "Please select two players."
+        );
+
+        return;
+      }
+
+
+      if (
+        player1Id === player2Id
+      ) {
+
+        alert(
+          "Choose two different players!"
+        );
+
+        return;
+      }
+
+
+      if (
+        ![0, 0.5, 1].includes(
+          numericResult
+        )
+      ) {
+
+        alert(
+          "Invalid match result."
+        );
+
+        return;
+      }
+
+
+      try {
+
+        // --------------------------------------------------------
+        // GET PLAYER INFORMATION
+        // --------------------------------------------------------
+
+        const {
+          data: players,
+          error: playerError
+        } =
+          await supabaseClient
+            .from("players")
+            .select(
+              "id, name, rating"
+            )
+            .in(
+              "id",
+              [
+                player1Id,
+                player2Id
+              ]
+            );
+
+
+        if (playerError) {
+
+          console.error(
+            "Fetch players error:",
+            playerError
+          );
+
+          alert(
+            "Error fetching players:\n\n" +
+            playerError.message
+          );
+
+          return;
+        }
+
+
+        const p1 =
+          players.find(
+            player =>
+              String(player.id) ===
+              String(player1Id)
+          );
+
+
+        const p2 =
+          players.find(
+            player =>
+              String(player.id) ===
+              String(player2Id)
+          );
+
+
+        if (!p1 || !p2) {
+
+          alert(
+            "Could not find both players. Refresh and try again."
+          );
+
+          return;
+        }
+
+
+        // --------------------------------------------------------
+        // ELO CALCULATION
+        // --------------------------------------------------------
+
+        const K = 32;
+
+
+        const expectedP1 =
+          1 /
+          (
+            1 +
+            Math.pow(
+              10,
+              (p2.rating - p1.rating) / 400
+            )
+          );
+
+
+        const expectedP2 =
+          1 - expectedP1;
+
+
+        const scoreP1 =
+          numericResult;
+
+
+        const scoreP2 =
+          1 - numericResult;
+
+
+        const newP1 =
+          Math.round(
+            p1.rating +
+            K *
+            (
+              scoreP1 -
+              expectedP1
+            )
+          );
+
+
+        const newP2 =
+          Math.round(
+            p2.rating +
+            K *
+            (
+              scoreP2 -
+              expectedP2
+            )
+          );
+
+
+        // --------------------------------------------------------
+        // CONVERT RESULT TO DATABASE FORMAT
+        // --------------------------------------------------------
+
+        const chessResult =
+          getChessResult(
+            numericResult
+          );
+
+
+        console.log(
+          "Saving match:",
+          {
+            player1: p1.name,
+            player2: p2.name,
+            result: chessResult,
+            oldRating1: p1.rating,
+            newRating1: newP1,
+            oldRating2: p2.rating,
+            newRating2: newP2
+          }
+        );
+
+
+        // --------------------------------------------------------
+        // UPDATE RATINGS
+        // --------------------------------------------------------
+
+        const updateP1 =
+          await supabaseClient
+            .from("players")
+            .update({
+              rating: newP1
+            })
+            .eq(
+              "id",
+              player1Id
+            );
+
+
+        if (updateP1.error) {
+
+          console.error(
+            "Player 1 rating error:",
+            updateP1.error
+          );
+
+          alert(
+            "Could not update Player 1 rating:\n\n" +
+            updateP1.error.message
+          );
+
+          return;
+        }
+
+
+        const updateP2 =
+          await supabaseClient
+            .from("players")
+            .update({
+              rating: newP2
+            })
+            .eq(
+              "id",
+              player2Id
+            );
+
+
+        if (updateP2.error) {
+
+          console.error(
+            "Player 2 rating error:",
+            updateP2.error
+          );
+
+          alert(
+            "Could not update Player 2 rating:\n\n" +
+            updateP2.error.message
+          );
+
+          return;
+        }
+
+
+        // --------------------------------------------------------
+        // SAVE MATCH
+        // --------------------------------------------------------
+
+        const {
+          error: matchError
+        } =
+          await supabaseClient
+            .from("matches")
+            .insert([
+              {
+                player1_id: player1Id,
+                player2_id: player2Id,
+
+                /*
+                 * IMPORTANT:
+                 * Save standard chess result.
+                 */
+                result: chessResult,
+
+                created_at:
+                  new Date().toISOString()
+              }
+            ]);
+
+
+        if (matchError) {
+
+          console.error(
+            "Match insert error:",
+            matchError
+          );
+
+          alert(
+            "Ratings were updated, but the match could not be saved.\n\n" +
+            matchError.message
+          );
+
+          return;
+        }
+
+
+        // --------------------------------------------------------
+        // SUCCESS
+        // --------------------------------------------------------
+
+        alert(
+          "Match recorded successfully!\n\n" +
+
+          p1.name +
+          ": " +
+          p1.rating +
+          " → " +
+          newP1 +
+
+          "\n\n" +
+
+          p2.name +
+          ": " +
+          p2.rating +
+          " → " +
+          newP2
+        );
+
+
+        await loadPlayers();
+
+        await loadMatches();
+
+
+      } catch (error) {
+
+        console.error(
+          "recordMatch exception:",
+          error
+        );
+
+        alert(
+          "Unexpected error recording match:\n\n" +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    // ============================================================
+    // LOAD MATCH HISTORY
+    // ============================================================
+
+    async function loadMatches(
+      limit = 20
+    ) {
+
+      try {
+
+        const {
+          data: matches,
+          error
+        } =
+          await supabaseClient
+            .from("matches")
+            .select(
+              `
+                id,
+                player1_id,
+                player2_id,
+                result,
+                created_at
+              `
+            )
+            .order(
+              "created_at",
+              {
+                ascending: false
+              }
+            )
+            .limit(limit);
+
+
+        if (error) {
+
+          console.error(
+            "Load matches error:",
+            error
+          );
+
+          return;
+        }
+
+
+        const tbody =
+          document.getElementById(
+            "matchHistory"
+          );
+
+
+        tbody.innerHTML = "";
+
+
+        if (
+          !matches ||
+          matches.length === 0
+        ) {
+
+          tbody.innerHTML = `
+            <tr>
+              <td
+                colspan="4"
+                class="empty"
+              >
+                No matches recorded yet.
+              </td>
+            </tr>
+          `;
+
+          return;
+        }
+
+
+        // --------------------------------------------------------
+        // GET PLAYER NAMES
+        // --------------------------------------------------------
+
+        const ids =
+          Array.from(
+            new Set(
+              matches.flatMap(
+                match => [
+                  match.player1_id,
+                  match.player2_id
+                ]
+              )
+            )
+          );
+
+
+        const {
+          data: players
+        } =
+          await supabaseClient
+            .from("players")
+            .select(
+              "id, name"
+            )
+            .in(
+              "id",
+              ids
+            );
+
+
+        const nameById = {};
+
+
+        if (players) {
+
+          players.forEach(
+            player => {
+
+              nameById[player.id] =
+                player.name;
+
+            }
+          );
+
+        }
+
+
+        // --------------------------------------------------------
+        // DISPLAY MATCHES
+        // --------------------------------------------------------
+
+        matches.forEach(
+          match => {
+
+            const when =
+              match.created_at
+                ? new Date(
+                    match.created_at
+                  ).toLocaleString()
+                : "—";
+
+
+            const p1 =
+              escapeHtml(
+                nameById[
+                  match.player1_id
+                ] ||
+                "Player 1"
+              );
+
+
+            const p2 =
+              escapeHtml(
+                nameById[
+                  match.player2_id
+                ] ||
+                "Player 2"
+              );
+
+
+            const resultText =
+              formatChessResult(
+                match.result
+              );
+
+
+            tbody.innerHTML += `
+              <tr>
+
+                <td>
+                  ${escapeHtml(when)}
+                </td>
+
+                <td>
+                  ${p1}
+                </td>
+
+                <td>
+                  <strong>
+                    ${resultText}
+                  </strong>
+                </td>
+
+                <td>
+                  ${p2}
+                </td>
+
+              </tr>
+            `;
+
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "loadMatches exception:",
+          error
+        );
+
+      }
+
+    }
+
+
+    // ============================================================
+    // EVENT LISTENERS
+    // ============================================================
+
+    window.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+        document
+          .getElementById("loginBtn")
+          .addEventListener(
+            "click",
+            adminLogin
+          );
+
+
+        document
+          .getElementById("logoutBtn")
+          .addEventListener(
+            "click",
+            adminLogout
+          );
+
+
+        document
+          .getElementById("addPlayerBtn")
+          .addEventListener(
+            "click",
+            addNewPlayer
+          );
+
+
+        document
+          .getElementById("recordMatchBtn")
+          .addEventListener(
+            "click",
+            recordMatch
+          );
+
+
+        // Initial loading
+        checkUserSession();
+
+        loadPlayers();
+
+        loadMatches();
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
