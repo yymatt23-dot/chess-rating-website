@@ -7,152 +7,247 @@
   <title>Sangat NHS Chess Rating</title>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f1f5f2;
-      margin: 0;
-      color: #173c30;
-    }
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background:
+      radial-gradient(circle at top, #285f4c 0, #173c30 35%, #10251f 100%);
+    color: #173c30;
+    min-height: 100vh;
+  }
+
+  header {
+    text-align: center;
+    color: white;
+    padding: 55px 20px 45px;
+  }
+
+  header .logo {
+    font-size: 55px;
+    margin-bottom: 10px;
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 34px;
+    letter-spacing: 1px;
+  }
+
+  header p {
+    color: #e6b84e;
+    font-size: 16px;
+    margin-top: 12px;
+  }
+
+  main {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 0 20px 50px;
+  }
+
+  .card,
+  .admin-login,
+  .admin-action-card {
+    background: rgba(255, 255, 255, 0.98);
+    padding: 28px;
+    border-radius: 18px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.20);
+    margin-bottom: 25px;
+  }
+
+  .search-card {
+    text-align: center;
+    padding: 35px 25px;
+  }
+
+  .search-card h2 {
+    font-size: 25px;
+    margin-bottom: 8px;
+  }
+
+  .search-card p {
+    color: #666;
+    margin-bottom: 25px;
+  }
+
+  .search-box {
+    display: flex;
+    gap: 10px;
+    max-width: 600px;
+    margin: auto;
+  }
+
+  input,
+  select {
+    padding: 13px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 15px;
+  }
+
+  button {
+    background: #173c30;
+    color: white;
+    border: none;
+    padding: 13px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  button:hover {
+    background: #235c49;
+  }
+
+  #logoutBtn {
+    background: #A30000;
+  }
+
+  #logoutBtn:hover {
+    background: #D60000;
+  }
+
+  #searchResult {
+    max-width: 600px;
+    margin: 25px auto 0;
+  }
+
+  .rating-card {
+    background: linear-gradient(135deg, #173c30, #285f4c);
+    color: white;
+    border-radius: 18px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+  }
+
+  .rating-card .player-name {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .rating-card .rating-label {
+    color: #e6b84e;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .rating-card .rating-number {
+    font-size: 55px;
+    font-weight: bold;
+    margin: 5px 0;
+  }
+
+  h2 {
+    color: #173c30;
+    margin-top: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+
+  th,
+  td {
+    padding: 13px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+
+  th {
+    background: #173c30;
+    color: white;
+  }
+
+  .empty {
+    text-align: center;
+    color: #777;
+    padding: 25px;
+  }
+
+  #loginMessage {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .muted {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .success {
+    color: green;
+  }
+
+  .error {
+    color: red;
+  }
+
+  .warning {
+    color: #b36b00;
+  }
+
+  footer {
+    text-align: center;
+    background: #0b1c17;
+    color: white;
+    padding: 25px 15px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 600px) {
 
     header {
-      background: #173c30;
-      color: white;
-      text-align: center;
-      padding: 30px 15px;
+      padding: 40px 15px;
     }
 
     header h1 {
-      margin: 0;
-      font-size: 30px;
-    }
-
-    header p {
-      color: #e6b84e;
+      font-size: 26px;
     }
 
     main {
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 20px;
+      padding: 0 12px 40px;
     }
 
     .card,
     .admin-login,
     .admin-action-card {
-      background: white;
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 3px 12px #0001;
-      margin-bottom: 25px;
     }
 
-    h2 {
-      color: #173c30;
-      margin-top: 0;
+    .search-box {
+      flex-direction: column;
     }
 
-    input,
-    select {
-      padding: 10px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 200px;
-      box-sizing: border-box;
+    .search-box button {
+      width: 100%;
     }
 
-    button {
-      background: #173c30;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background: #235c49;
-    }
-
-    #logoutBtn {
-      background: #A30000;
-    }
-
-    #logoutBtn:hover {
-      background: #D60000;
+    .rating-card .rating-number {
+      font-size: 45px;
     }
 
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
+      font-size: 14px;
     }
 
     th,
     td {
-      padding: 13px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
+      padding: 9px;
     }
-
-    th {
-      background: #173c30;
-      color: white;
-    }
-
-    .empty {
-      text-align: center;
-      color: #777;
-      padding: 25px;
-    }
-
-    #loginMessage {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    footer {
-      text-align: center;
-      background: #10251f;
-      color: white;
-      padding: 20px;
-      margin-top: 40px;
-    }
-
-    .muted {
-      color: #666;
-      font-size: 0.9rem;
-    }
-
-    .success {
-      color: green;
-    }
-
-    .error {
-      color: red;
-    }
-
-    .warning {
-      color: #b36b00;
-    }
-
-    @media (max-width: 600px) {
-      input,
-      select {
-        width: 100%;
-      }
-
-      table {
-        font-size: 14px;
-      }
-
-      th,
-      td {
-        padding: 9px;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 
 <body>
@@ -276,7 +371,32 @@
 
     </div>
 
+<!-- PLAYER RATING SEARCH -->
+<div class="card search-card">
 
+  <h2>🔎 Find Your Chess Rating</h2>
+
+  <p>
+    Enter your name below to view your official Sangat NHS Chess Club rating.
+  </p>
+
+  <div class="search-box">
+
+    <input
+      id="playerSearch"
+      type="text"
+      placeholder="Enter player name..."
+    />
+
+    <button id="searchPlayerBtn">
+      SEARCH
+    </button>
+
+  </div>
+
+  <div id="searchResult"></div>
+
+</div>
     <!-- LEADERBOARD -->
     <div class="card">
 
@@ -1496,7 +1616,120 @@
 
     }
 
+// ============================================================
+// SEARCH PLAYER RATING
+// ============================================================
 
+async function searchPlayerRating() {
+
+  const searchInput =
+    document.getElementById("playerSearch");
+
+  const resultDiv =
+    document.getElementById("searchResult");
+
+  const searchName =
+    searchInput.value.trim();
+
+  resultDiv.innerHTML = "";
+
+  if (!searchName) {
+
+    resultDiv.innerHTML = `
+      <p class="warning">
+        Please enter your name.
+      </p>
+    `;
+
+    return;
+  }
+
+  try {
+
+    const {
+      data: players,
+      error
+    } = await supabaseClient
+      .from("players")
+      .select("id, name, rating")
+      .ilike(
+        "name",
+        `%${searchName}%`
+      )
+      .order(
+        "rating",
+        {
+          ascending: false
+        }
+      );
+
+    if (error) {
+
+      console.error(
+        "Search player error:",
+        error
+      );
+
+      resultDiv.innerHTML = `
+        <p class="error">
+          Failed to search player.
+        </p>
+      `;
+
+      return;
+    }
+
+    if (!players || players.length === 0) {
+
+      resultDiv.innerHTML = `
+        <p class="warning">
+          No player found with that name.
+        </p>
+      `;
+
+      return;
+    }
+
+    resultDiv.innerHTML = players.map(
+      player => `
+        <div class="rating-card">
+
+          <div class="player-name">
+            ♟ ${escapeHtml(player.name)}
+          </div>
+
+          <div class="rating-label">
+            Official Chess Rating
+          </div>
+
+          <div class="rating-number">
+            ${player.rating}
+          </div>
+
+          <div>
+            Sangat NHS Chess Club
+          </div>
+
+        </div>
+      `
+    ).join("");
+
+  } catch (error) {
+
+    console.error(
+      "Search player exception:",
+      error
+    );
+
+    resultDiv.innerHTML = `
+      <p class="error">
+        Something went wrong while searching.
+      </p>
+    `;
+
+  }
+
+}
     // ============================================================
     // EVENT LISTENERS
     // ============================================================
@@ -1504,7 +1737,12 @@
     window.addEventListener(
       "DOMContentLoaded",
       () => {
-
+document
+  .getElementById("searchPlayerBtn")
+  .addEventListener(
+    "click",
+    searchPlayerRating
+  );
         document
           .getElementById("loginBtn")
           .addEventListener(
