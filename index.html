@@ -10,14 +10,23 @@
   * {
     box-sizing: border-box;
   }
-
+.school-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto 10px;
+}
   body {
     margin: 0;
     font-family: Arial, sans-serif;
     background:
-      radial-gradient(circle at top, #285f4c 0, #173c30 35%, #10251f 100%);
-    color: #173c30;
-    min-height: 100vh;
+    linear-gradient(
+        rgba(16, 37, 31, 0.75),
+        rgba(16, 37, 31, 0.75)
+    ),
+    url("chess-logo.png") center center / 1000px auto no-repeat fixed;
   }
 
   header {
@@ -52,7 +61,7 @@
   .card,
   .admin-login,
   .admin-action-card {
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(255, 255, 255, 0.70);
     padding: 28px;
     border-radius: 18px;
     box-shadow: 0 12px 35px rgba(0,0,0,0.20);
@@ -253,8 +262,10 @@
 <body>
 
   <header>
+    <img src="./school-logo.jpeg" alt="School Logo" class="school-logo">
     <h1>♟ Sangat NHS Chess Club</h1>
-    <p>Official Chess Rating Leaderboard</p>
+    <p>Internal School Chess Rating</p>
+    <p>School Chess Elo Leaderboard</p>
   </header>
 
   <main>
@@ -471,7 +482,7 @@
 
 
   <footer>
-    Sangat National High School | Chess Club
+    Sangat National High School | Chess Club | SY 2026-2027
   </footer>
 
 
